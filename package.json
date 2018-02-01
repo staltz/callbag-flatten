@@ -1,0 +1,22 @@
+{
+  "name": "callbag-flatten",
+  "version": "1.0.0",
+  "description": "Callbag operator that flattens a higher-order callbag source",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/staltz/callbag-flatten.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "author": "staltz.com",
+  "license": "MIT",
+  "keywords": [
+    "callbag"
+  ],
+  "devDependencies": {
+    "tape": "^4.8.0",
+    "callbag-map": "1.0.0"
+  }
+}
