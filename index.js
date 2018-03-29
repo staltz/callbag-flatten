@@ -6,8 +6,8 @@ const flatten = source => (start, sink) => {
   let outerEnded = false;
   let outerTalkback;
   let innerTalkback;
-  function talkback(t) {
-    if (t === 1) (innerTalkback || outerTalkback || noop)(1);
+  function talkback(t,d) {
+    if (t === 1) (innerTalkback || outerTalkback || noop)(1,d);
     if (t === 2) {
       innerTalkback && innerTalkback(2);
       outerTalkback && outerTalkback(2);
