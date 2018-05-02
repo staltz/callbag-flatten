@@ -1,6 +1,6 @@
 # callbag-flatten
 
-Callbag operator that flattens a higher-order callbag source. Like RxJS "switch" or xstream "flatten". Use it with `map` to get behavior equivalent to "flatMap". Works on either pullable or listenable sources.
+Callbag operator that flattens a higher-order callbag source. Like RxJS "switch" or xstream "flatten". Use it with `map` to get behavior equivalent to "switchMap". Works on either pullable or listenable sources.
 
 `npm install callbag-flatten`
 
