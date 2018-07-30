@@ -2,12 +2,11 @@ const flatten = source => (start, sink) => {
   if (start !== 0) return;
   const exists = x => typeof x !== 'undefined';
   const absent = x => typeof x === 'undefined';
-  const noop = () => {};
   let outerEnded = false;
   let outerTalkback;
   let innerTalkback;
   function talkback(t,d) {
-    if (t === 1) (innerTalkback || outerTalkback || noop)(1,d);
+    if (t === 1) (innerTalkback || outerTalkback)(1,d);
     if (t === 2) {
       innerTalkback && innerTalkback(2);
       outerTalkback && outerTalkback(2);
