@@ -1,6 +1,6 @@
 const test = require('tape');
 const map = require('callbag-map');
-const flatten = require('./index');
+const flatten = require('.');
 
 test('it flattens a two-layer async infinite listenable sources', t => {
   t.plan(23);

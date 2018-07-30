@@ -40,4 +40,4 @@ const flatten = source => (start, sink) => {
   });
 };
 
-module.exports = flatten;
+export default flatten;
