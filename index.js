@@ -31,8 +31,10 @@ const flatten = source => (start, sink) => {
           }
         }
       });
-    } else if (T === 2 && D) sink(2, D);
-    else if (T === 2) {
+    } else if (T === 2 && D) {
+      innerTalkback && innerTalkback(2);
+      sink(2, D);
+    } else if (T === 2) {
       if (!innerTalkback) sink(2);
       else outerEnded = true;
     }
