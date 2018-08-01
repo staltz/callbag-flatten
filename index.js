@@ -16,7 +16,7 @@ const flatten = source => (start, sink) => {
       sink(0, talkback);
     } else if (T === 1) {
       const innerSource = D;
-      if (innerTalkback) innerTalkback(2);
+      innerTalkback && innerTalkback(2);
       innerSource(0, (t, d) => {
         if (t === 0) {
           innerTalkback = d;
