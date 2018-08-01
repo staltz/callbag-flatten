@@ -22,8 +22,10 @@ const flatten = source => (start, sink) => {
           innerTalkback = d;
           innerTalkback(1);
         } else if (t === 1) sink(1, d);
-        else if (t === 2 && d) sink(2, d);
-        else if (t === 2) {
+        else if (t === 2 && d) {
+          outerTalkback(2);
+          sink(2, d);
+        } else if (t === 2) {
           if (outerEnded) sink(2);
           else {
             innerTalkback = void 0;

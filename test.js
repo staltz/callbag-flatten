@@ -315,3 +315,76 @@ test('it errors sink & unsubscribe from inner when outer throws', t => {
     t.end();
   }, 1200);
 });
+
+test('it errors sink & unsubscribe from outer when inner throws', t => {
+  t.plan(27);
+
+  const outerExpectedType = [
+    [0, 'function'],
+    [2, 'undefined'],
+  ];
+  const downwardsExpectedType = [
+    [0, 'function'],
+    [1, 'string'],
+    [1, 'string'],
+    [1, 'string'],
+    [1, 'string'],
+    [1, 'string'],
+    [1, 'string'],
+    [2, 'number']
+  ];
+  const downwardsExpected = ['a1', 'a2', 'b1', 'b2', 'b3', 'b4'];
+
+  function sourceOuter(type, data) {
+    const et = outerExpectedType.shift();
+    t.equals(type, et[0], 'outer type is expected: ' + et[0]);
+    t.equals(typeof data, et[1], 'outer data type is expected: ' + et[1]);
+
+    if (type === 0) {
+      const sink = data;
+      setTimeout(() => { sink(1, 'a'); }, 230);
+      setTimeout(() => { sink(1, 'b'); }, 460);
+      sink(0, sourceOuter);
+    }
+  }
+
+  function sourceInner(type, data) {
+    if (type === 0) {
+      const sink = data;
+      let i = 0;
+      const id = setInterval(() => {
+        i++;
+        sink(1, i);
+        if (i === 4) {
+          clearInterval(id);
+          sink(2, 42);
+        }
+      }, 100);
+      sink(0, (t, d) => {
+        if (t === 2) clearInterval(id);
+      });
+    }
+  }
+
+  function sink(type, data) {
+    const et = downwardsExpectedType.shift();
+    t.equals(type, et[0], 'downwards type is expected: ' + et[0]);
+    t.equals(typeof data, et[1], 'downwards data type is expected: ' + et[1]);
+    if (type === 1) {
+      const e = downwardsExpected.shift();
+      t.equals(data, e, 'downwards data is expected: ' + JSON.stringify(e));
+    }
+  };
+
+  const source = flatten(
+    map(str =>
+      map(num => str + num)(sourceInner)
+    )(sourceOuter)
+  );
+  source(0, sink);
+
+  setTimeout(() => {
+    t.pass('nothing else happens');
+    t.end();
+  }, 1200);
+});
