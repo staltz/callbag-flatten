@@ -7,7 +7,7 @@ const flatten = source => (start, sink) => {
     if (t === 1) (innerTalkback || outerTalkback)(1, d);
     if (t === 2) {
       innerTalkback && innerTalkback(2);
-      outerTalkback && outerTalkback(2);
+      outerTalkback(2);
     }
   }
   source(0, (T, D) => {
