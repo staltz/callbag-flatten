@@ -8,6 +8,7 @@
   },
   "main": "index.cjs.js",
   "module": "index.js",
+  "types": "types.d.ts",
   "scripts": {
     "build": "rollup $npm_package_module -o $npm_package_main --f cjs",
     "pretest": "npm run build",
@@ -23,5 +24,8 @@
     "callbag-map": "1.0.0",
     "rollup": "^0.63.4",
     "tape": "^4.8.0"
+  },
+  "dependencies": {
+    "callbag": "^1.1.0"
   }
 }
