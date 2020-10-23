@@ -1,5 +1,6 @@
 const test = require('tape');
 const map = require('callbag-map');
+const never = require('callbag-never');
 const flatten = require('.');
 
 test('it flattens a two-layer async infinite listenable sources', t => {
@@ -387,4 +388,46 @@ test('it errors sink & unsubscribe from outer when inner throws', t => {
     t.pass('nothing else happens');
     t.end();
   }, 1200);
+});
+
+test('it should not try unsubscribe from completed source when waiting for inner completion', t => {
+  t.plan(5);
+
+  const outerExpectedType = [
+    [0, 'function'],
+  ];
+  const downwardsExpectedType = [
+    [0, 'function'],
+  ];
+
+  function sourceOuter(type, data) {
+    const et = outerExpectedType.shift();
+    t.equals(type, et[0], 'outer type is expected: ' + et[0]);
+    t.equals(typeof data, et[1], 'outer data type is expected: ' + et[1]);
+
+    if (type === 0) {
+      const sink = data;
+      sink(0, sourceOuter);
+      sink(1, true);
+      sink(2);
+    }
+  }
+
+  function sink(type, data) {
+    const et = downwardsExpectedType.shift();
+    t.equals(type, et[0], 'downwards type is expected: ' + et[0]);
+    t.equals(typeof data, et[1], 'downwards data type is expected: ' + et[1]);
+    if (type === 0) {
+      const talkback = data;
+      setTimeout(() => talkback(2), 0);
+    }
+  };
+
+  const source = flatten(map(() => never)(sourceOuter));
+  source(0, sink);
+
+  setTimeout(() => {
+    t.pass('nothing else happens');
+    t.end();
+  }, 100);
 });

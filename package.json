@@ -22,6 +22,7 @@
   ],
   "devDependencies": {
     "callbag-map": "1.0.0",
+    "callbag-never": "^1.0.0",
     "rollup": "^0.63.4",
     "tape": "^4.8.0"
   },
