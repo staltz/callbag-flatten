@@ -1,6 +1,6 @@
 {
   "name": "callbag-flatten",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Callbag operator that flattens a higher-order callbag source",
   "repository": {
     "type": "git",
