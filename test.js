@@ -390,7 +390,7 @@ test('it errors sink & unsubscribe from outer when inner throws', t => {
   }, 1200);
 });
 
-test('it should not try unsubscribe from completed source when waiting for inner completion', t => {
+test('it should not try to unsubscribe from completed source when waiting for inner completion', t => {
   t.plan(5);
 
   const outerExpectedType = [
@@ -424,6 +424,53 @@ test('it should not try unsubscribe from completed source when waiting for inner
   };
 
   const source = flatten(map(() => never)(sourceOuter));
+  source(0, sink);
+
+  setTimeout(() => {
+    t.pass('nothing else happens');
+    t.end();
+  }, 100);
+});
+
+test('it should not try to unsubscribe from completed source when for inner errors', t => {
+  t.plan(7);
+
+  const outerExpectedType = [
+    [0, 'function'],
+  ];
+  const downwardsExpectedType = [
+    [0, 'function'],
+    [2, 'boolean'],
+  ];
+
+  function sourceOuter(type, data) {
+    const et = outerExpectedType.shift();
+    t.equals(type, et[0], 'outer type is expected: ' + et[0]);
+    t.equals(typeof data, et[1], 'outer data type is expected: ' + et[1]);
+
+    if (type === 0) {
+      const sink = data;
+      sink(0, sourceOuter);
+      sink(1, true);
+      sink(2);
+    }
+  }
+
+  function sourceInner(type, data) {
+    if (type === 0) {
+      const sink = data;
+      sink(0, sourceInner);
+      setTimeout(() => sink(2, true), 0);
+    }
+  }
+
+  function sink(type, data) {
+    const et = downwardsExpectedType.shift();
+    t.equals(type, et[0], 'downwards type is expected: ' + et[0]);
+    t.equals(typeof data, et[1], 'downwards data type is expected: ' + et[1]);
+  };
+
+  const source = flatten(map(() => sourceInner)(sourceOuter));
   source(0, sink);
 
   setTimeout(() => {
